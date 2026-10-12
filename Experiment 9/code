@@ -1,0 +1,379 @@
+# Name: Divyansh Tyagi
+# BTech Cse, 3rd year
+# Sec: ”B
+# cu24250145
+# Roll no: 21
+#Experiment No. 9
+# Experiment Name
+Data Storytelling and Business Insight Generation using Interactive Visualizations
+Aim
+Experiment Name :
+Data Storytelling and Business Insight Generation using Interactive Visualizations
+To create a compelling data-driven story by analyzing a real-world dataset, developing meaningful visualizations, and presenting
+actionable business insights to support strategic decision-making.
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+sns.set_theme(style="whitegrid")
+url = "https://raw.githubusercontent.com/yannie28/Global-Superstore/master/Global_Superstore(CSV).csv"
+df = pd.read_csv(url, encoding="utf-8-sig")
+print("Dataset Loaded Successfully!")
+print("Rows:", df.shape[0])
+print("Columns:", df.shape[1])
+df.head()
+Dataset Loaded Successfully!
+Rows: 1000
+Columns: 24
+Row
+ID Order ID Order
+Date Ship Date Ship
+Mode
+Customer
+ID
+Customer
+Name Segment Postal
+Code City ...
+Product
+ID Category Sub-
+Category
+Product
+Name
+0 40098
+CA-2014-
+AB10015140-
+41954
+11/11/2014 11/13/2014 First
+Class
+AB-
+100151402
+Aaron
+Bergman Consumer 73120.0 Oklahoma
+City ...
+TEC-
+PH-
+5816
+Technology Phones Samsung
+Convoy 3
+1 26341
+IN-2014-
+JR162107-
+41675
+2/5/2014 2/7/2014 Second
+Class JR-162107 Justin
+Ritter Corporate NaN Wollongong ...
+FUR-
+CH-
+5379
+Furniture Chairs
+Novimex
+Executive
+Leather
+Armchair,
+Black
+2 25330
+IN-2014-
+CR127307-
+41929
+10/17/2014 10/18/2014 First
+Class
+CR-
+127307
+Craig
+Reiter Consumer NaN Brisbane ...
+TEC-
+PH-
+5356
+Technology Phones
+Nokia
+Smart
+Phone,
+with
+Caller ID
+3 13524
+ES-2014-
+KM1637548-
+41667
+1/28/2014 1/30/2014 First
+Class
+KM-
+1637548
+Katherine
+Murray
+Home
+Office NaN Berlin ...
+TEC-
+PH-
+5267
+Technology Phones
+Motorola
+Smart
+Phone,
+Cordless
+4 47221
+SG-2014-
+RH9495111-
+41948
+11/5/2014 11/6/2014 Same
+Day
+RH-
+9495111
+Rick
+Hansen Consumer NaN Dakar ...
+TEC-
+CO-
+6011
+Technology Copiers
+Sharp
+Wireless
+Fax,
+High-
+Speed
+5 rows × 24 columns
+print("Dataset Shape:", df.shape)
+print("\nColumn Names:")
+print(df.columns.tolist())
+print("\nData Types:")
+print(df.dtypes)
+Dataset Shape: (1000, 24)
+Column Names:
+['Row ID', 'Order ID', 'Order Date', 'Ship Date', 'Ship Mode', 'Customer ID', 'Customer Name', 'Segment', 'Postal Code', 'City', 'State', 'Country
+Data Types:
+Row ID int64
+Order ID object
+Order Date object
+Ship Date object
+Ship Mode object
+Customer ID object
+Customer Name object
+Segment object
+Postal Code float64
+City object
+State object
+Country object
+Region object
+Market object
+Product ID object
+Category object
+Sub-Category object
+Product Name object
+Sales float64
+Quantity int64
+Discount float64
+Profit float64
+Shipping Cost float64
+Order Priority object
+dtype: object
+print("Missing Values:")
+print(df.isnull().sum())
+print("\nDuplicate Rows:", df.duplicated().sum())
+Missing Values:
+Row ID 0
+Order ID 0
+Order Date 0
+Ship Date 0
+Ship Mode 0
+Customer ID 0
+Customer Name 0
+Segment 0
+Postal Code 806
+City 0
+State 0
+Country 0
+Region 0
+Market 0
+Product ID 0
+Category 0
+Sub-Category 0
+Product Name 0
+Sales 0
+Quantity 0
+Discount 0
+Profit 0
+Shipping Cost 0
+Order Priority 0
+dtype: int64
+Duplicate Rows: 0
+df["Order Date"] = pd.to_datetime(df["Order Date"], errors="coerce")
+df["Ship Date"] = pd.to_datetime(df["Ship Date"], errors="coerce")
+for col in ["Sales", "Quantity", "Discount", "Profit", "Shipping Cost"]:
+df[col] = pd.to_numeric(df[col], errors="coerce")
+df = df.drop_duplicates()
+df["Year"] = df["Order Date"].dt.year
+df["Month"] = df["Order Date"].dt.month
+print("Data Cleaning Completed!")
+print("New Shape:", df.shape)
+Data Cleaning Completed!
+New Shape: (1000, 26)
+df[[
+"Sales",
+"Quantity",
+"Discount",
+"Profit",
+"Shipping Cost"
+]].describe().round(2)
+Sales Quantity Discount Profit Shipping Cost
+count 1000.00 1000.00 1000.00 1000.00 1000.00
+mean 1710.97 5.56 0.09 288.92 272.38
+std 1259.24 2.72 0.15 574.50 176.16
+min 1.91 1.00 0.00 -3059.82 1.07
+25% 826.91 4.00 0.00 10.04 209.83
+50% 1585.12 5.00 0.00 190.68 258.90
+75% 2477.81 7.00 0.15 518.87 351.07
+max 9892.74 14.00 0.80 4946.37 923.63
+total_sales = df["Sales"].sum()
+total_profit = df["Profit"].sum()
+total_orders = df["Order ID"].nunique()
+total_customers = df["Customer ID"].nunique()
+profit_margin = (total_profit / total_sales) * 100
+average_order_value = total_sales / total_orders
+print("========== KPIs ==========")
+print("Total Sales :", round(total_sales, 2))
+print("Total Profit :", round(total_profit, 2))
+print("Total Orders :", total_orders)
+print("Total Customers :", total_customers)
+print("Average Order Value:", round(average_order_value, 2))
+print("Profit Margin :", round(profit_margin, 2), "%")
+========== KPIs ==========
+Total Sales : 1710971.47
+Total Profit : 288920.44
+Total Orders : 867
+Total Customers : 800
+Average Order Value: 1973.44
+Profit Margin : 16.89 %
+yearly = df.groupby("Year")[["Sales", "Profit"]].sum().reset_index()
+display(yearly.round(2))
+plt.figure(figsize=(10,5))
+plt.plot(yearly["Year"], yearly["Sales"],
+marker="o", label="Sales")
+plt.plot(yearly["Year"], yearly["Profit"],
+marker="o", label="Profit")
+plt.title("Yearly Sales and Profit")
+plt.xlabel("Year")
+plt.ylabel("Amount")
+plt.legend()
+plt.show()
+Year Sales Profit
+0 2012 293829.82 54249.43
+1 2013 352570.33 45515.51
+2 2014 456844.29 84663.14
+3 2015 607727.03 104492.36
+region = df.groupby("Region")[["Sales", "Profit"]].sum().reset_index()
+display(region.round(2))
+plt.figure(figsize=(10,5))
+sns.barplot(data=region, x="Region", y="Sales")
+plt.title("Sales by Region")
+plt.xticks(rotation=45)
+plt.show()
+Region Sales Profit
+0 Canada 887.01 213.72
+1 Caribbean 30746.74 5463.82
+2 Central Africa 33810.48 9668.22
+3 Central America 140966.21 21741.95
+4 Central US 17187.94 5676.02
+5 Eastern Africa 17387.94 4302.72
+6 Eastern Asia 193590.60 37911.16
+7 Eastern Europe 45662.19 12228.45
+8 Eastern US 12256.44 2544.89
+9 North Africa 26266.44 7416.42
+10 Northern Europe 103888.63 23552.73
+11 Oceania 220809.08 33777.56
+12 South America 64550.54 7723.58
+13 Southeastern Asia 147337.60 10561.80
+14 Southern Africa 22262.28 4876.32
+15 Southern Asia 205466.26 37536.60
+16 Southern Europe 94441.11 20557.50
+17 Southern US 8360.75 1384.72
+18 Western Africa 15478.79 1278.17
+19 Western Asia 33308.21 5262.35
+20 Western Europe 259576.28 32783.40
+21 Western US 16729.95 2458.34
+category = df.groupby("Category")[["Sales", "Profit"]].sum().reset_index()
+display(category.round(2))
+category.plot(
+x="Category",
+y=["Sales", "Profit"],
+kind="bar",
+figsize=(10,5)
+)
+plt.title("Sales and Profit by Category")
+plt.ylabel("Amount")
+plt.xticks(rotation=0)
+plt.show()
+Category Sales Profit
+0 Furniture 601492.31 82188.95
+1 Office Supplies 352496.14 61662.81
+2 Technology 756983.02 145068.68
+best_region = region.loc[region["Sales"].idxmax()]
+best_category = category.loc[category["Sales"].idxmax()]
+profit_category = category.loc[category["Profit"].idxmax()]
+worst_region = region.loc[region["Profit"].idxmin()]
+print("========== KEY INSIGHTS ==========\n")
+print("1. Highest Sales Region:",
+best_region["Region"])
+print("2. Highest Sales Category:",
+best_category["Category"])
+print("3. Highest Profit Category:",
+profit_category["Category"])
+print("4. Lowest Profit Region:",
+worst_region["Region"])
+print("\nOverall Profit Margin:",
+round(profit_margin, 2), "%")
+========== KEY INSIGHTS ==========
+1. Highest Sales Region: Western Europe
+2. Highest Sales Category: Technology
+3. Highest Profit Category: Technology
+4. Lowest Profit Region: Canada
+Overall Profit Margin: 16.89 %
+Experiment 9 — Question Answers
+Q1. What is data storytelling? How is it different from data visualization?
+Answer: Data storytelling is the process of combining data, visualization, and narrative to communicate meaningful insights effectively.
+Data visualization mainly represents data using charts and graphs, whereas data storytelling explains the meaning and importance of
+those visualizations and connects them with business decisions.
+Q2. Why is storytelling important in business analytics and decision-making?
+Answer: Storytelling makes complex analytical results easier to understand. It helps stakeholders identify important trends, problems,
+opportunities, and risks. It also connects data findings with business objectives and supports better decision-making.
+Q3. What are the essential components of an effective data story?
+Answer: The essential components are:
+1. Clear business problem or objective
+2. Relevant and reliable data
+3. Data analysis
+4. Meaningful visualizations
+5. Key findings and insights
+6. Context and explanation
+Q4. How do Key Performance Indicators (KPIs) enhance business reporting?
+Answer: KPIs provide a quick summary of important business performance measures. Examples include Sales, Profit, Number of
+Orders, Average Order Value, and Profit Margin. They help managers monitor performance, compare results, identify gaps, and make
+informed decisions.
+Q5. Why should visualizations be arranged in a logical sequence while presenting analytical findings?
+Answer: Visualizations should be arranged logically so that the audience can easily follow the data story. A proper sequence can move
+from problem → data → analysis → findings → recommendations. This makes the presentation clear, organized, and easier to
+understand.
+Q6. What factors should be considered while selecting visualizations for a business presentation?
+Answer: The following factors should be considered:
+Type of data
+Purpose of analysis
+Comparison required
+Number of categories
+Audience
+Readability
+Q7. Explain how dashboards and storytelling complement each other in Business Intelligence.
+Answer: Dashboards provide an interactive view of important KPIs, trends, and business metrics. Storytelling explains the meaning of
+these results and highlights the most important findings. Therefore, dashboards provide the visual evidence, while storytelling provides
+the context and explanation.
+Q8. What challenges may arise while communicating analytical insights to non-technical stakeholders?
+Answer: Some common challenges are:
+1. Complex technical terminology
+2. Too many charts or excessive information
+3. Lack of business context
+4. Difficulty understanding statistical concepts
+Q9. Give two real-world examples where data storytelling has influenced business or policy decisions.
+Answer:
+Example 1 — Retail: Retail companies use sales dashboards and data stories to identify product demand, sales trends, and regional
+performance. This information can support decisions about inventory, promotions, and product planning.
+Q10. How can effective data storytelling improve strategic planning and organizational performance?
+Answer: Effective data storytelling helps organizations understand their current performance, identify trends and performance gaps, and
+communicate findings clearly to stakeholders. It supports better planning, resource allocation, monitoring, and decision-making,
+which can contribute to improved organizational performance.
